@@ -9,7 +9,17 @@ function getAllGames(req, res) {
             res.status(500).json({ error: 'Error de traducción' });
         } else {
             data = corregirAmpersand(data);
-            res.status(200).json(JSON.parse(data));
+            const games = JSON.parse(data);
+            const salida = [];
+            games.forEach(game => {
+                salida.push({
+                    name: game.title,
+                    rating: game.rating,
+                    date: game.details.releaseDate,
+                    platforms: game.details.platforms,
+                });
+            });
+            res.status(200).json(JSON.parse(JSON.stringify(salida)));
         }
     });
 }
