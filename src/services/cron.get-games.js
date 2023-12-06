@@ -3,10 +3,10 @@ const cron = require('node-cron');
 const { Pool } = require('pg');
 const axios = require('axios');
 
-const url = 'http://fervent-kapitsa.212-227-110-211.plesk.page/scrapper/get-trending-games';
+const url = 'http://fervent-kapitsa.212-227-110-211.plesk.page/scrapper/get-next-games/2024/1';
 
 cron.schedule('*/1 * * * *', async () => {
-  console.log('Actualizando el archivo JSON...');
+  console.log('Actualizando la bd...');
 
   try {
     const response = await axios.get(url);
@@ -22,6 +22,8 @@ cron.schedule('*/1 * * * *', async () => {
 
     const values = newData.map(game => {
       const details = game.details;
+      (details.releaseDate === null) ? details.releaseDate = new Date() : details.releaseDate;
+      (game.rating === null || game.rating === '') ? game.rating = 0 : game.rating;
 
       return [
         game.title,
