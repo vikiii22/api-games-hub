@@ -2,7 +2,7 @@ CREATE DATABASE gamesHub;
 
 CREATE TABLE games (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL UNIQUE,
     rating INT NOT NULL,
     save FLOAT NOT NULL,
     detailsLink VARCHAR(255) NOT NULL,
