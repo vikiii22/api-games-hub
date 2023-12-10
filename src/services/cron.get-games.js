@@ -64,7 +64,21 @@ const updateDbFromJson = async () => {
       data.map(async (game) => {
         const details = game.details;
 
-        // Ajusta la lógica según tu esquema de base de datos
+        const rating = parseFloat(game.rating);
+        const save = parseFloat(game.save.replace(',', '.'));
+
+        if (isNaN(rating)){
+          game.rating = 0;
+        }
+
+        if (isNaN(save)){
+          game.save = 0;  
+        }
+
+        if(details.releaseDate === undefined || details.releaseDate === null){
+          details.releaseDate = new Date(0);
+        }
+
         const query = `
           INSERT INTO games (
             title, rating, save, detailsLink, releaseDate, platforms,
@@ -99,6 +113,6 @@ const updateDbFromJson = async () => {
   }
 };
 
-cron.schedule('*/1 * * * *', scrapperTrendingGamesJson);
+// cron.schedule('*/1 * * * *', scrapperTrendingGamesJson);
 
-cron.schedule('*/5 * * * *', updateDbFromJson);
+cron.schedule('*/1 * * * *', updateDbFromJson);
