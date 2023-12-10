@@ -3,7 +3,7 @@ const cron = require('node-cron');
 const { Pool } = require('pg');
 const axios = require('axios');
 
-const url = 'http://fervent-kapitsa.212-227-110-211.plesk.page/scrapper/get-next-games/2024/1';
+const url = 'http://fervent-kapitsa.212-227-110-211.plesk.page/scrapper/get-games';
 
 cron.schedule('*/1 * * * *', async () => {
   console.log('Actualizando la bd...');
