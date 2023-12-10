@@ -2,7 +2,7 @@ const path = require('path');
 const cron = require('node-cron');
 const { Pool } = require('pg');
 const axios = require('axios');
-const { scrapperRawg } = require('../services/scrapper-games');
+const { scrapperRawg, scrapperRawgNewGames, scrapperTrendingGames } = require('../services/scrapper-games');
 const fs = require('fs');
 const jsonFilePath = path.join(__dirname, '..', 'datos', 'scrapperRawg.json');
 
@@ -14,6 +14,30 @@ const saveToJson = async () => {
   try {
     console.log('Obteniendo datos...');
     const response = await scrapperRawg();
+
+    fs.writeFileSync(jsonFilePath, JSON.stringify(response, null, 2), 'utf-8');
+    console.log('Datos guardados en JSON:', jsonFilePath);
+  } catch (error) {
+    console.error('Error al obtener o guardar datos:', error.message);
+  }
+};
+
+const scrapperRawgNewGamesJson = async () => {
+  try {
+    console.log('Obteniendo datos...');
+    const response = await scrapperRawgNewGames();
+
+    fs.writeFileSync(jsonFilePath, JSON.stringify(response, null, 2), 'utf-8');
+    console.log('Datos guardados en JSON:', jsonFilePath);
+  } catch (error) {
+    console.error('Error al obtener o guardar datos:', error.message);
+  }
+}
+
+;const scrapperTrendingGamesJson = async () => {
+  try {
+    console.log('Obteniendo datos...');
+    const response = await scrapperTrendingGames();
 
     fs.writeFileSync(jsonFilePath, JSON.stringify(response, null, 2), 'utf-8');
     console.log('Datos guardados en JSON:', jsonFilePath);
@@ -75,6 +99,6 @@ const updateDbFromJson = async () => {
   }
 };
 
-cron.schedule('*/1 * * * *', saveToJson);
+cron.schedule('*/1 * * * *', scrapperTrendingGamesJson);
 
 cron.schedule('*/5 * * * *', updateDbFromJson);
