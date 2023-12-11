@@ -10,15 +10,15 @@ const jsonFilePath = path.join(__dirname, '..', 'datos', 'scrapperRawg.json');
 // const url = 'http://fervent-kapitsa.212-227-110-211.plesk.page/scrapper/get-games';
 
 
-const saveToJson = async () => {
+const scrapperRawgJson = async () => {
   try {
     console.log('Obteniendo datos...');
     const response = await scrapperRawg();
 
-    fs.writeFileSync(jsonFilePath, JSON.stringify(response, null, 2), 'utf-8');
+    // fs.writeFileSync(jsonFilePath, JSON.stringify(response, null, 2), 'utf-8');
     console.log('Datos guardados en JSON:', jsonFilePath);
   } catch (error) {
-    console.error('Error al obtener o guardar datos:', error.message);
+    console.error('Error al obtener datos:', error.message);
   }
 };
 
@@ -64,7 +64,21 @@ const updateDbFromJson = async () => {
       data.map(async (game) => {
         const details = game.details;
 
-        // Ajusta la lógica según tu esquema de base de datos
+        const rating = parseFloat(game.rating);
+        const save = parseFloat(game.save.replace(',', '.'));
+
+        if (isNaN(rating)){
+          game.rating = 0;
+        }
+
+        if (isNaN(save)){
+          game.save = 0;  
+        }
+
+        if(details.releaseDate === undefined || details.releaseDate === null){
+          details.releaseDate = new Date(0);
+        }
+
         const query = `
           INSERT INTO games (
             title, rating, save, detailsLink, releaseDate, platforms,
@@ -99,6 +113,6 @@ const updateDbFromJson = async () => {
   }
 };
 
-cron.schedule('*/1 * * * *', scrapperTrendingGamesJson);
+// cron.schedule('*/15 * * * *', scrapperRawgJson);
 
-cron.schedule('*/5 * * * *', updateDbFromJson);
+cron.schedule('*/1 * * * *', updateDbFromJson);
