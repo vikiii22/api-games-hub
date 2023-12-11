@@ -10,15 +10,15 @@ const jsonFilePath = path.join(__dirname, '..', 'datos', 'scrapperRawg.json');
 // const url = 'http://fervent-kapitsa.212-227-110-211.plesk.page/scrapper/get-games';
 
 
-const saveToJson = async () => {
+const scrapperRawgJson = async () => {
   try {
     console.log('Obteniendo datos...');
     const response = await scrapperRawg();
 
-    fs.writeFileSync(jsonFilePath, JSON.stringify(response, null, 2), 'utf-8');
+    // fs.writeFileSync(jsonFilePath, JSON.stringify(response, null, 2), 'utf-8');
     console.log('Datos guardados en JSON:', jsonFilePath);
   } catch (error) {
-    console.error('Error al obtener o guardar datos:', error.message);
+    console.error('Error al obtener datos:', error.message);
   }
 };
 
@@ -113,6 +113,6 @@ const updateDbFromJson = async () => {
   }
 };
 
-// cron.schedule('*/1 * * * *', scrapperTrendingGamesJson);
+// cron.schedule('*/15 * * * *', scrapperRawgJson);
 
 cron.schedule('*/1 * * * *', updateDbFromJson);
