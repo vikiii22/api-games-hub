@@ -12,15 +12,36 @@ const pool = new Pool({
 });
 
 function getAllGames(req, res) {
-    pool.query('SELECT * FROM games', (err, result) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Error de traducción' });
-        } else {
-            res.status(200).json(result.rows);
-        }
-    });
+    let query = 'SELECT * FROM games ORDER BY id';
+
+    const page = req.query.page || 1;
+    const limit = 20;
+
+    if (page !== 'all') {
+        const offset = (page - 1) * limit;
+        query += ` LIMIT $1 OFFSET $2`;
+
+        pool.query(query, [limit, offset], (err, result) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Error de traducción' });
+            } else {
+                res.status(200).json(result.rows);
+            }
+        });
+    } else {
+        // Si page es 'all', devolver todos los resultados sin paginación
+        pool.query(query, (err, result) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Error de traducción' });
+            } else {
+                res.status(200).json(result.rows);
+            }
+        });
+    }
 }
+
 
 function corregirAmpersand(data) {
     // Reemplaza "&" con "\u0026" en todas las instancias
