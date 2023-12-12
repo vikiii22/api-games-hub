@@ -19,13 +19,40 @@ function scrapperRawg() {
 function scrapperRawgNewGames(req, res) {
     const url = 'https://rawg.io/discover/last-30-days';
 
-    return scrapper(url);
+    scrapperPagination(url, 1, 20)
+        .then(async response => {
+            fs.writeFileSync('src/datos/scrapperRawg.json', JSON.stringify(response, null, 2), 'utf-8');
+            console.log('Datos guardados en JSON:', 'datos/scrapperRawg.json');
+        })
+        .catch(error => {
+            console.error('Error al obtener o guardar datos:', error.message);
+        });
 }
 
 function scrapperTrendingGames(req, res) {
     const url = 'https://rawg.io/';
 
-    return scrapper(url);
+    scrapperPagination(url, 1, 20)
+        .then(async response => {
+            fs.writeFileSync('src/datos/scrapperRawg.json', JSON.stringify(response, null, 2), 'utf-8');
+            console.log('Datos guardados en JSON:', 'datos/scrapperRawg.json');
+        })
+        .catch(error => {
+            console.error('Error al obtener o guardar datos:', error.message);
+        });
+}
+
+function scraperBestGames(req, res) {
+    const url = 'https://rawg.io/discover/best-of-the-year';
+
+    scrapperPagination(url, 1, 10)
+        .then(async response => {
+            fs.writeFileSync('src/datos/scrapperRawg.json', JSON.stringify(response, null, 2), 'utf-8');
+            console.log('Datos guardados en JSON:', 'datos/scrapperRawg.json');
+        })
+        .catch(error => {
+            console.error('Error al obtener o guardar datos:', error.message);
+        });
 }
 
 function scrapperRawgNextGames(year, month) {
@@ -285,5 +312,6 @@ module.exports = {
     scrapperRawg,
     scrapperRawgNewGames,
     scrapperTrendingGames,
-    scrapperRawgNextGames
+    scrapperRawgNextGames,
+    scraperBestGames
 };
