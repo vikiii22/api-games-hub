@@ -42,10 +42,27 @@ function getAllGames(req, res) {
     }
 }
 
+function getGamesByPopularity(req, res) {
+    const page = req.query.page || 1;
+    const limit = 20;
+    const offset = (page - 1) * limit;
+
+    const query = `SELECT * FROM games ORDER BY rating + save DESC LIMIT $1 OFFSET $2`;
+
+    pool.query(query, [limit, offset], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Error de traducción' });
+        } else {
+            res.status(200).json(result.rows);
+        }
+    });
+}
+
 
 function corregirAmpersand(data) {
     // Reemplaza "&" con "\u0026" en todas las instancias
     return data.replace(/&/g, '\\u0026');
 }
 
-module.exports = { getAllGames };
+module.exports = { getAllGames, getGamesByPopularity };

@@ -2,7 +2,7 @@ const path = require('path');
 const cron = require('node-cron');
 const { Pool } = require('pg');
 const axios = require('axios');
-const { scrapperRawg, scrapperRawgNewGames, scrapperTrendingGames } = require('../services/scrapper-games');
+const { scrapperRawg, scrapperRawgNewGames, scrapperTrendingGames, scraperBestGames } = require('../services/scrapper-games');
 const fs = require('fs');
 const jsonFilePath = path.join(__dirname, '..', 'datos', 'scrapperRawg.json');
 
@@ -27,24 +27,11 @@ const scrapperRawgNewGamesJson = async () => {
     console.log('Obteniendo datos...');
     const response = await scrapperRawgNewGames();
 
-    fs.writeFileSync(jsonFilePath, JSON.stringify(response, null, 2), 'utf-8');
     console.log('Datos guardados en JSON:', jsonFilePath);
   } catch (error) {
     console.error('Error al obtener o guardar datos:', error.message);
   }
 }
-
-;const scrapperTrendingGamesJson = async () => {
-  try {
-    console.log('Obteniendo datos...');
-    const response = await scrapperTrendingGames();
-
-    fs.writeFileSync(jsonFilePath, JSON.stringify(response, null, 2), 'utf-8');
-    console.log('Datos guardados en JSON:', jsonFilePath);
-  } catch (error) {
-    console.error('Error al obtener o guardar datos:', error.message);
-  }
-};
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -67,15 +54,15 @@ const updateDbFromJson = async () => {
         const rating = parseFloat(game.rating);
         const save = parseFloat(game.save.replace(',', '.'));
 
-        if (isNaN(rating)){
+        if (isNaN(rating)) {
           game.rating = 0;
         }
 
-        if (isNaN(save)){
-          game.save = 0;  
+        if (isNaN(save)) {
+          game.save = 0;
         }
 
-        if(details.releaseDate === undefined || details.releaseDate === null){
+        if (details.releaseDate === undefined || details.releaseDate === null) {
           details.releaseDate = new Date(0);
         }
 
@@ -113,6 +100,10 @@ const updateDbFromJson = async () => {
   }
 };
 
-// cron.schedule('*/15 * * * *', scrapperRawgJson);
+cron.schedule('0 0 */10 * *', scraperBestGames);
+
+cron.schedule('0 0 */5 * *', scrapperTrendingGames);
+
+cron.schedule('0 0 */2 * *', scrapperRawgNewGamesJson);
 
 cron.schedule('*/1 * * * *', updateDbFromJson);
