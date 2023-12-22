@@ -17,3 +17,16 @@ CREATE TABLE games (
     trailer VARCHAR(255) NOT NULL,
     image VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    realName VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    avatar VARCHAR(255) NOT NULL,
+    uuid VARCHAR(255) NOT NULL,
+    isAdmin BOOLEAN NOT NULL DEFAULT FALSE,
+    myGames TEXT NOT NULL DEFAULT '{}',
+    myWishlist TEXT NOT NULL DEFAULT '{}',
+    friends TEXT NOT NULL DEFAULT '{}'
+);

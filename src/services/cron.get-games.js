@@ -102,8 +102,8 @@ const updateDbFromJson = async () => {
 
 cron.schedule('0 0 */10 * *', scraperBestGames);
 
-cron.schedule('0 0 */5 * *', scrapperTrendingGames);
+cron.schedule('0 1 */5 * *', scrapperTrendingGames);
 
-cron.schedule('0 0 */2 * *', scrapperRawgNewGamesJson);
+cron.schedule('0 2 */2 * *', scrapperRawgNewGamesJson);
 
 cron.schedule('*/1 * * * *', updateDbFromJson);
