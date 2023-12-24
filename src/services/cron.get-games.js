@@ -2,7 +2,7 @@ const path = require('path');
 const cron = require('node-cron');
 const { Pool } = require('pg');
 const axios = require('axios');
-const { scrapperRawg, scrapperRawgNewGames, scrapperTrendingGames, scraperBestGames } = require('../services/scrapper-games');
+const { scrapperRawg, scrapperRawgNewGames, scrapperTrendingGames, scraperBestGames, scrapperRawgNextGames } = require('../services/scrapper-games');
 const fs = require('fs');
 const jsonFilePath = path.join(__dirname, '..', 'datos', 'scrapperRawg.json');
 
@@ -105,5 +105,7 @@ cron.schedule('0 0 */10 * *', scraperBestGames);
 cron.schedule('0 1 */5 * *', scrapperTrendingGames);
 
 cron.schedule('0 2 */2 * *', scrapperRawgNewGamesJson);
+
+cron.schedule('0 0 * * *', scrapperRawgNextGames);
 
 cron.schedule('*/1 * * * *', updateDbFromJson);
