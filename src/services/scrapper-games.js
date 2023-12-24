@@ -55,12 +55,28 @@ function scraperBestGames(req, res) {
         });
 }
 
-function scrapperRawgNextGames(year, month) {
-    year = year;
-    month = month;
-    const url = `https://rawg.io/video-game-releases/${year}-${month}`;
+function scrapperRawgNextGames() {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+    const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
 
-    return scrapper(url);
+    const currentMonthUrl = `https://rawg.io/video-game-releases/${currentYear}-${currentMonth}`;
+    const nextMonthUrl = `https://rawg.io/video-game-releases/${nextYear}-${nextMonth}`;
+
+    const currentMonthPromise = scrapperPagination(currentMonthUrl, 1, 2);
+    const nextMonthPromise = scrapperPagination(nextMonthUrl, 1, 2);
+
+    Promise.all([currentMonthPromise, nextMonthPromise])
+        .then(async ([currentMonthResponse, nextMonthResponse]) => {
+            const combinedResponse = [...currentMonthResponse, ...nextMonthResponse];
+            fs.writeFileSync('src/datos/scrapperRawg.json', JSON.stringify(combinedResponse, null, 2), 'utf-8');
+            console.log('Datos guardados en JSON:', 'datos/scrapperRawg.json');
+        })
+        .catch(error => {
+            console.error('Error al obtener o guardar datos:', error.message);
+        });
 }
 
 function scrapper(url) {
