@@ -6,7 +6,7 @@ function scrapperRawg() {
     const url = 'https://rawg.io/games';
     const url2 = 'https://rawg.io/games?page=2';
 
-    scrapperPagination(url, 1, 20)
+    scrapperPagination(url, 1, 3)
         .then(async response => {
             fs.writeFileSync('src/datos/scrapperRawg.json', JSON.stringify(response, null, 2), 'utf-8');
             console.log('Datos guardados en JSON:', 'datos/scrapperRawg.json');
@@ -19,7 +19,7 @@ function scrapperRawg() {
 function scrapperRawgNewGames(req, res) {
     const url = 'https://rawg.io/discover/last-30-days';
 
-    scrapperPagination(url, 1, 20)
+    scrapperPagination(url, 1, 3)
         .then(async response => {
             fs.writeFileSync('src/datos/scrapperRawg.json', JSON.stringify(response, null, 2), 'utf-8');
             console.log('Datos guardados en JSON:', 'datos/scrapperRawg.json');
@@ -32,7 +32,7 @@ function scrapperRawgNewGames(req, res) {
 function scrapperTrendingGames(req, res) {
     const url = 'https://rawg.io/';
 
-    scrapperPagination(url, 1, 20)
+    scrapperPagination(url, 1, 3)
         .then(async response => {
             fs.writeFileSync('src/datos/scrapperRawg.json', JSON.stringify(response, null, 2), 'utf-8');
             console.log('Datos guardados en JSON:', 'datos/scrapperRawg.json');
@@ -45,7 +45,7 @@ function scrapperTrendingGames(req, res) {
 function scraperBestGames(req, res) {
     const url = 'https://rawg.io/discover/best-of-the-year';
 
-    scrapperPagination(url, 1, 10)
+    scrapperPagination(url, 1, 3)
         .then(async response => {
             fs.writeFileSync('src/datos/scrapperRawg.json', JSON.stringify(response, null, 2), 'utf-8');
             console.log('Datos guardados en JSON:', 'datos/scrapperRawg.json');
