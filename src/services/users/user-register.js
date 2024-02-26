@@ -1,11 +1,13 @@
 const path = require('path');
 const { conectar } = require('../../database/connection-mongo');
+const { createHash } = require('crypto');
 
 async function registerUser(req, res) {
     try {
         const db = await conectar();
         const userDB = db.collection('Users');
         const user = {
+            id: createHash('md5').update(req.body.email + new Date()).digest('hex'),
             realName: req.body.realName,
             email: req.body.email,
             username: req.body.username,
