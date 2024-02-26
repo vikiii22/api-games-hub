@@ -97,12 +97,16 @@ async function getFavouriteGames(req, res) {
             { projection: { _id: 0, favoritesGames: 1 }}
         )
         .then(result => {
-            pool.query(
-                `SELECT * FROM games WHERE id IN (${result.favoritesGames.join(',')})`
-            )
-            .then(result => {
-                res.status(200).json(result.rows);
-            })
+            if(result.favoritesGames.length === 0){ 
+                res.status(200).json({ favouriteGames: [] })
+            }else{
+                pool.query(
+                    `SELECT * FROM games WHERE id IN (${result.favoritesGames.join(',')})`
+                )
+                .then(result => {
+                    res.status(200).json({ favouriteGames: result.rows });
+                })
+            }
         })
         .catch(error => {
             console.error(error);
