@@ -64,9 +64,16 @@ async function getUser(req, res) {
 async function updateUser(req, res) {
     const userDB = await createConnection();
     try{
+        const udpteFields = { ...req.body };
+        delete udpteFields.id;
+        delete udpteFields.email;
+        delete udpteFields.favoritesGames;
+        delete udpteFields.friends;
+        delete udpteFields.gamesPlayed;
+        delete udpteFields.gamesOwned;
         userDB.updateOne(
             { email: req.query.email },
-            { $set: req.body }
+            { $set: udpteFields }
         )
         .then(result => {
             res.status(200).json({ message: 'Usuario actualizado' });
